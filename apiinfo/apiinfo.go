@@ -45,7 +45,39 @@ func ParseApiInfo(s string) APIInfo {
 
 //DialArgs parser libp2p address to http/ws protocol, the version argument can be override by address in version
 func (a APIInfo) DialArgs(version string) (string, error) {
+	return DialArgs(a.Addr, version)
+}
+
+func (a APIInfo) Host() (string, error) {
 	ma, err := multiaddr.NewMultiaddr(a.Addr)
+	if err == nil {
+		_, addr, err := manet.DialArgs(ma)
+		if err != nil {
+			return "", err
+		}
+
+		return addr, nil
+	}
+
+	spec, err := url.Parse(a.Addr)
+	if err != nil {
+		return "", err
+	}
+	return spec.Host, nil
+}
+
+func (a APIInfo) AuthHeader() http.Header {
+	if len(a.Token) != 0 {
+		headers := http.Header{}
+		headers.Add("Authorization", "Bearer "+string(a.Token))
+		return headers
+	}
+	log.Warn("API Token not set and requested, capabilities might be limited.")
+	return nil
+}
+
+func DialArgs(addr, version string) (string, error) {
+	ma, err := multiaddr.NewMultiaddr(addr)
 	if err == nil {
 		_, addr, err := manet.DialArgs(ma)
 		if err != nil {
@@ -90,40 +122,12 @@ func (a APIInfo) DialArgs(version string) (string, error) {
 
 		return "ws://" + addr + "/rpc/" + version, nil
 	} else {
-		log.Warningf("parse libp2p address %s error , plz confirm this error %v", a.Addr, err)
+		log.Warningf("parse libp2p address %s error , plz confirm this error %v", addr, err)
 	}
 
-	_, err = url.Parse(a.Addr)
+	_, err = url.Parse(addr)
 	if err != nil {
 		return "", err
 	}
-	return a.Addr + "/rpc/" + version, nil
-}
-
-func (a APIInfo) Host() (string, error) {
-	ma, err := multiaddr.NewMultiaddr(a.Addr)
-	if err == nil {
-		_, addr, err := manet.DialArgs(ma)
-		if err != nil {
-			return "", err
-		}
-
-		return addr, nil
-	}
-
-	spec, err := url.Parse(a.Addr)
-	if err != nil {
-		return "", err
-	}
-	return spec.Host, nil
-}
-
-func (a APIInfo) AuthHeader() http.Header {
-	if len(a.Token) != 0 {
-		headers := http.Header{}
-		headers.Add("Authorization", "Bearer "+string(a.Token))
-		return headers
-	}
-	log.Warn("API Token not set and requested, capabilities might be limited.")
-	return nil
+	return addr + "/rpc/" + version, nil
 }
