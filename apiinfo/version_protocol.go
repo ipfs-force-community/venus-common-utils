@@ -1,4 +1,4 @@
-package apifinfo
+package apiinfo
 
 import (
 	"github.com/multiformats/go-multiaddr"
@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-const P_VERSION = multiaddr.P_WSS+1
+const P_VERSION = multiaddr.P_WSS + 1
 
 func init() {
 	multiaddr.AddProtocol(multiaddr.Protocol{
-		Name:       "version",
-		Code:       P_VERSION,
-		VCode:      multiaddr.CodeToVarint(P_VERSION),
-		Size:       multiaddr.LengthPrefixedVarSize,
+		Name:  "version",
+		Code:  P_VERSION,
+		VCode: multiaddr.CodeToVarint(P_VERSION),
+		Size:  multiaddr.LengthPrefixedVarSize,
 		Transcoder: multiaddr.NewTranscoderFromFunctions(func(s string) ([]byte, error) {
 			if !strings.HasPrefix(s, "v") {
 				return nil, xerrors.New("version must start with version prefix v")

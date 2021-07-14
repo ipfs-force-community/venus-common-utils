@@ -1,4 +1,4 @@
-package apifinfo
+package apiinfo
 
 import (
 	"net/http"
@@ -49,40 +49,40 @@ func (a APIInfo) DialArgs(version string) (string, error) {
 		val, err := ma.ValueForProtocol(P_VERSION)
 		if err == nil {
 			version = val
-		}else if err != multiaddr.ErrProtocolNotFound{
+		} else if err != multiaddr.ErrProtocolNotFound {
 			return "", err
 		}
 
 		_, err = ma.ValueForProtocol(multiaddr.P_WSS)
 		if err == nil {
 			return "wss://" + addr + "/rpc/" + version, nil
-		}else if err != multiaddr.ErrProtocolNotFound{
+		} else if err != multiaddr.ErrProtocolNotFound {
 			return "", err
 		}
 
 		_, err = ma.ValueForProtocol(multiaddr.P_HTTPS)
 		if err == nil {
 			return "https://" + addr + "/rpc/" + version, nil
-		}else if err != multiaddr.ErrProtocolNotFound{
+		} else if err != multiaddr.ErrProtocolNotFound {
 			return "", err
 		}
 
 		_, err = ma.ValueForProtocol(multiaddr.P_WS)
 		if err == nil {
 			return "ws://" + addr + "/rpc/" + version, nil
-		}else if err != multiaddr.ErrProtocolNotFound{
+		} else if err != multiaddr.ErrProtocolNotFound {
 			return "", err
 		}
 
 		_, err = ma.ValueForProtocol(multiaddr.P_HTTP)
 		if err == nil {
 			return "http://" + addr + "/rpc/" + version, nil
-		}else if err != multiaddr.ErrProtocolNotFound{
+		} else if err != multiaddr.ErrProtocolNotFound {
 			return "", err
 		}
 
 		return "ws://" + addr + "/rpc/" + version, nil
-	}else{
+	} else {
 		log.Warningf("parse libp2p address %s error , plz confirm this error %v", a.Addr, err)
 	}
 

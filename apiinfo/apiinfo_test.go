@@ -1,4 +1,4 @@
-package apifinfo
+package apiinfo
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 func TestAPIInfo_DialArgs(t *testing.T) {
 	tests := []struct {
 		name    string
-		addr  string
+		addr    string
 		want    string
 		wantErr bool
 	}{
@@ -74,7 +74,7 @@ func TestAPIInfo_DialArgs(t *testing.T) {
 				fmt.Println()
 			}
 			a := APIInfo{
-				Addr:  tt.addr,
+				Addr: tt.addr,
 			}
 
 			got, err := a.DialArgs("v0")
