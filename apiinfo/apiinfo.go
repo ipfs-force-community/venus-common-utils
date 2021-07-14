@@ -22,6 +22,13 @@ type APIInfo struct {
 	Token []byte
 }
 
+func NewAPIInfo(addr, token string) APIInfo {
+	return APIInfo{
+		Addr:  addr,
+		Token: []byte(token),
+	}
+}
+
 func ParseApiInfo(s string) APIInfo {
 	var tok []byte
 	if infoWithToken.Match([]byte(s)) {
