@@ -1,6 +1,7 @@
 package apiinfo
 
 import (
+	"golang.org/x/xerrors"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -81,7 +82,7 @@ func DialArgs(addr, version string) (string, error) {
 	if err == nil {
 		_, addr, err := manet.DialArgs(ma)
 		if err != nil {
-			return "", err
+			return "", xerrors.Errorf("parser libp2p url fail %w", err)
 		}
 
 		//override version
@@ -127,7 +128,7 @@ func DialArgs(addr, version string) (string, error) {
 
 	_, err = url.Parse(addr)
 	if err != nil {
-		return "", err
+		return "", xerrors.Errorf("parser address fail %w", err)
 	}
 	return addr + "/rpc/" + version, nil
 }
