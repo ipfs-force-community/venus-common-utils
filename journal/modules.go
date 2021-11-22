@@ -5,7 +5,7 @@ import (
 	"go.uber.org/fx"
 )
 
-func OpenFilesystemJournal(journalPath string, component string, lc fx.Lifecycle, disabled DisabledEvents) (Journal, error) {
+func OpenFilesystemJournal(lc fx.Lifecycle, journalPath string, component string, disabled DisabledEvents) (Journal, error) {
 	jrnl, err := OpenFSJournal(journalPath, component, disabled)
 	if err != nil {
 		return nil, err
